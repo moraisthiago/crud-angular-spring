@@ -2,6 +2,7 @@ package com.example.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,9 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.dto.UsuarioDTO;
-import com.example.model.Foto;
 import com.example.model.Usuario;
-import com.example.repository.FotoRepository;
 import com.example.repository.UsuarioRepository;
 
 @Service
@@ -19,9 +18,6 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private FotoRepository fotoRepository;
 
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
@@ -40,30 +36,24 @@ public class UsuarioService {
 
     }
 
-    // public ResponseEntity<Usuario> save(UsuarioDTO usuarioDTO) {
+    public ResponseEntity<Usuario> update(UUID id, UsuarioDTO usuarioDTO) {
 
-    // Optional<Foto> imagemOptional =
-    // fotoRepository.findById(usuarioDTO.getImagem().getId());
+        Optional<Usuario> oldUsuario = usuarioRepository.findById(id);
 
-    // if (imagemOptional.isPresent()) {
+        if (oldUsuario.isPresent()) {
+            Usuario usuario = oldUsuario.get();
 
-    // Foto imagem = imagemOptional.get();
-    // usuarioDTO.setImagem(imagem);
+            usuario.setNome(usuarioDTO.getNome());
+            usuario.setSobrenome(usuarioDTO.getSobrenome());
+            usuario.setEmail(usuarioDTO.getEmail());
+            usuario.setSenha(usuarioDTO.getSenha());
 
-    // Usuario usuario = new Usuario();
+            usuarioRepository.save(usuario);
 
-    // usuario.setNome(usuarioDTO.getNome());
-    // usuario.setSobrenome(usuarioDTO.getSobrenome());
-    // usuario.setEmail(usuarioDTO.getEmail());
-    // usuario.setSenha(usuarioDTO.getSenha());
-
-    // usuarioRepository.save(usuario);
-
-    // return new ResponseEntity<>(usuario, HttpStatus.OK);
-    // } else {
-    // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    // }
-
-    // }
+            return new ResponseEntity<>(usuario, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
 }
