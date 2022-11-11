@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.example.model.Foto;
 
 @Repository
-public interface FotoRepository extends JpaRepository<Foto, UUID>{
-    
+public interface FotoRepository extends JpaRepository<Foto, UUID> {
+
 }

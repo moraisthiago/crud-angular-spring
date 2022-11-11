@@ -19,10 +19,6 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
-    }
-
     public Usuario save(UsuarioDTO usuarioDTO) {
 
         Usuario usuario = new Usuario();
@@ -34,6 +30,33 @@ public class UsuarioService {
 
         return usuarioRepository.save(usuario);
 
+    }
+
+    public List<Usuario> findAll() {
+        return usuarioRepository.findAll();
+    }
+
+    public ResponseEntity<Usuario> findById(UUID id) {
+
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+
+        if (usuario.isPresent()) {
+            return new ResponseEntity<>(usuario.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public ResponseEntity<Object> delete(UUID id) {
+
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+
+        if (usuario.isPresent()) {
+            usuarioRepository.delete(usuario.get());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     public ResponseEntity<Usuario> update(UUID id, UsuarioDTO usuarioDTO) {
